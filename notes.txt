@@ -1,0 +1,61 @@
+React Hook Form is a lightweight library for managing forms in React. It’s fast, reduces boilerplate code, and works with uncontrolled components
+ (using ref instead of state), which means fewer re-renders and better performance.
+
+Yup is a JavaScript schema validation library. It lets you define a schema (rules) for your form data, like requiring a field or checking if an email is valid.
+ It integrates seamlessly with React Hook Form for clean validation. schema validation means what validation does my input field or any other field should have.
+
+ ////////////////////////////////////// How It Works   //////////////////////////////////////////////////
+
+Yup Schema: ->Defines validation rules for each field:
+username: -> Required, minimum 3 characters.
+email: -> Required, must be a valid email format.
+password: -> Required, minimum 6 characters.
+The yup.object().shape() method creates the schema.
+
+React Hook Form:
+useForm hook provides: -> register, handleSubmit, formState:{errors} , reset and many more
+register: -> Connects form inputs to React Hook Form.
+handleSubmit: -> Handles form submission and passes valid data to the onSubmit function.
+formState: { errors }: -> Contains validation error messages.
+reset: -> Clears the form after submission.
+The yupResolver connects the Yup schema to React Hook Form.
+
+Form Rendering:
+Each input is registered using {...register('fieldName')}.
+Error messages are displayed conditionally using errors.fieldName?.message.
+The form submits only if all validations pass.
+Submission:
+When the form is submitted, handleSubmit checks the schema.
+If valid, onSubmit logs the data and resets the form.
+If invalid, error messages appear below the respective fields.
+
+
+
+//       ///////////////////////////////////////////// React Query //////////////////////////////////////////
+
+// useQuery is used to fetch, cache, and manage data from a server (API)
+import { useQuery } from '@tanstack/react-query';
+
+1) useQuery({...}) -> It automatically fetches data when the component mounts.It caches the result. It tracks loading, error, and success states.
+It refetches if needed (e.g., on page refocus, by default).
+
+2) queryKey: ['users'] -> A unique key to identify the query in React Query’s cache. You can refetch or invalidate this query by this key.
+It can be a string or an array — arrays are more powerful for dynamic queries.
+
+3) queryFn: () => axios.get(...).then(...) This is the query function — what to run to fetch the data. This is where the actual API call happens.
+axios.get(...) makes a GET request to https://api.example.com/users. .then(res => res.data) extracts the actual data from the response.
+
+4) For working with React Query we need to Wrap our App component inside QueryClientProvider with parameter as QueryClient's object in main.jsx.
+Example-> import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+const queryClient = new QueryClient();
+<QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+
+//////////////////////////////////////////////// React SWR //////////////////////////////////////////////////////////////////
+
+SWR -> Stale while Revalidate
+It means:
+Show cached/stale data immediately.
+Then revalidate in the background (fetch fresh data).
+Update the UI with new data — automatically.
