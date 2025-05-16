@@ -59,3 +59,86 @@ It means:
 Show cached/stale data immediately.
 Then revalidate in the background (fetch fresh data).
 Update the UI with new data — automatically.
+
+
+////////////////////////////////////////////////// Debounce & Throttle ////////////////////////////////////////////////////////////////
+
+Debouncing delays a function’s execution until after a certain amount of time has passed since the last time it was called. In a search feature, 
+this means waiting for the user to stop typing before making an API call, reducing unnecessary requests.
+
+Example Scenario:
+User types “cat” in a search input.
+Without debounce: An API call is made for “c”, “ca”, “cat” (3 calls).
+With debounce (e.g., 500ms): Only one API call is made for “cat” after the user pauses for 500ms.
+
+Real time breakdown of Debouncing:
+A request will only be sent after you stop typing for 500ms.
+If you type again before that 500ms is up, the previous request is cancelled.
+
+0ms: You type h -> query is now 'h'   ->   A setTimeout() is set for 500ms to send a request with 'h'     ->    Timer is ticking… ⏳
+
+150ms: You type e  ->  query becomes 'he'  ->  Previous timeout is cleared  ->  New setTimeout() starts for 500ms  ->  Again waiting 500ms… ⏳
+
+320ms: You type l  ->  query becomes 'hel'  ->  Old timeout is cleared again   ->   New 500ms timeout starts
+
+400ms: You type another l  ->  query is now 'hell'  ->  Timeout cleared again  ->  Another 500ms timeout begins
+
+520ms: You type o  ->  query is 'hello'  ->  Old timeout cleared   ->  New 500ms timer starts
+
+🕐 1020ms (500ms after last keypress): ->  You stop typing   ->  Timeout doesn't get cleared this time  ->  API request is triggered with query 'hello'
+
+Results come back and show below the input
+
+
+Every time the user types something:
+
+We start a setTimeout() that says:
+→ “Wait 500ms, then make the API call.”
+
+But if the user types again before the 500ms is over,
+→ we should cancel the last timeout.
+Otherwise, we’ll end up making multiple API calls — which we don't want.
+
+To cancel a timeout, we need its ID. That's what typingTimeout stores.
+
+
+
+
+* Throttle
+Throttle ensures a function is called at most once every X milliseconds, no matter how many times it's triggered.Throttle in JavaScript ek technique hai jo 
+ensure karta hai ki koi function frequently na chale — especially jab kisi event jaise scroll, resize, mousemove, etc. pe lagatar calls ho rahi ho.
+
+Example ->  Problem Without Throttling:
+Agar tum scroll event par directly koi function call kar do, toh browser har millisecond mein us function ko call karega — isse performance kharab ho jaati hai.
+
+window.addEventListener('scroll', () => {
+  console.log('User scrolled!'); // yeh hazaaron baar chalega
+});
+
+
+Flow Samajho:
+1)User scroll karta hai. then throttledScroll call hota hai.
+2) Pehli baar toh lastCall = 0 hota hai, toh handleScroll() chalega. then lastCall update ho jaata hai to current time.
+3) Agli baar jab scroll hota hai, check hota hai:
+4)Kya abhi ka time - lastCall >= delay?
+5) Agar haan → handleScroll() chalega.
+6) Agar nahi → skip kar dega.
+
+
+/////////////////////////////////////////////////// Dynamic Import & Lazy Loading///////////////////////////////////////////////////////////////////////////////////////
+
+Dynamic Imports allow you to load JavaScript modules (like components or functions) only when needed, rather than loading them upfront. This is done using 
+the import() function, which returns a Promise. It’s a native JavaScript feature introduced in ES Modules.
+
+Why Use It?
+
+Reduces the initial bundle size.
+Speeds up app loading by deferring non-critical code.
+Improves performance, especially for large apps.
+
+Like this -> const HeavyComponent = await import('./HeavyComponent');
+
+
+Lazy Loading in React is a technique to defer loading of components until they’re needed (e.g., when a user navigates to a specific route or scrolls to a section).
+It uses React’s React.lazy() and Suspense APIs, built on top of dynamic imports.
+Suspense is used for fallback UI.
