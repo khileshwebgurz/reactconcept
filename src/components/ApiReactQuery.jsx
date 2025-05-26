@@ -6,7 +6,7 @@ const ApiReactQuery =()=> {
     
   const { data, isLoading, error } = useQuery({
     queryKey: ['users'],
-    queryFn: () => axios.get('https://jsonplaceholder.typicode.com/todos').then(res => res.data),
+    queryFn: () => axios.get('https://jsonplaceholder.typicode.com/').then(res => res.data),
   });
 
   if (isLoading) return <p>Loading...</p>;

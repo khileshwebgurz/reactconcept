@@ -8,6 +8,7 @@ import React, { Suspense, useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Home from "./components/Home";
 import PaginatedData from "./PaginationComponent/PaginatedData";
+import FileUpload from "./components/FileUpload";
 
 // Lazy load the Dashboard component
 const Dashboard = React.lazy(() => import("./components/Dashboard"));
@@ -62,7 +63,10 @@ function App() {
       </Router> */}
 
       {/* Paginated data */}
-      <PaginatedData/>
+      {/* <PaginatedData/> */}
+
+      {/* multer file upload */}
+      <FileUpload/>
     </>
   );
 }
